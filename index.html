@@ -1,0 +1,757 @@
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系統異常回報</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --primary-color: #6366f1;
+      --secondary-color: #22c55e;
+      --accent-color: #f97316;
+      --text-color: #334155;
+      --background-color: #f8fafc;
+      --card-background: rgba(255, 255, 255, 0.85);
+      --input-background: rgba(255, 255, 255, 0.9);
+      --box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+      --error-color: #ef4444;
+      --success-color: #10b981;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #6366f1 0%, #22c55e 100%);
+      margin: 0;
+      padding: 0;
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background-color: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .logo {
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .logo:hover {
+      text-shadow: 0 0 15px rgba(255,255,255,0.8);
+    }
+
+    .menu-icon {
+      position: relative;
+      z-index: 1001;
+      cursor: pointer;
+      font-size: 24px;
+      color: #ffffff;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .menu-icon:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: rotate(90deg);
+    }
+
+    .full-page-menu {
+      position: fixed;
+      top: 0;
+      right: -350px;
+      width: 350px;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.95) 0%, rgba(34, 197, 94, 0.95) 100%);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(12px);
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .full-page-menu.active {
+      right: 0;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 22px;
+      color: #ffffff;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .close-button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-item {
+      margin: 12px 0;
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .nav-link {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      padding: 12px 24px;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-link i {
+      font-size: 20px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #ffffff;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      perspective: 1000px;
+    }
+
+    .container {
+      max-width: 650px;
+      width: 100%;
+      background-color: var(--card-background);
+      border-radius: 24px;
+      box-shadow: var(--box-shadow);
+      padding: 40px;
+      backdrop-filter: blur(10px);
+      transition: all 0.5s ease;
+      transform-style: preserve-3d;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .container:hover {
+      transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      color: var(--primary-color);
+      font-size: 32px;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      font-weight: 700;
+    }
+
+    h2::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      margin: 15px auto 0;
+      border-radius: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    input[type="email"],
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid rgba(203, 213, 225, 0.8);
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background-color: var(--input-background);
+      box-sizing: border-box;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text-color);
+    }
+
+    input[type="email"]:focus,
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 130px;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      border: none;
+      padding: 16px 24px;
+      font-size: 18px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      width: 100%;
+      margin-top: 35px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    button:hover::before {
+      transform: translateX(100%);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 5px 10px rgba(99, 102, 241, 0.3);
+    }
+
+    button:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .success-message, .error-message {
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 25px;
+      text-align: center;
+      display: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .success-message {
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 2px solid var(--success-color);
+      color: #065f46;
+    }
+
+    .error-message {
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 2px solid var(--error-color);
+      color: #b91c1c;
+    }
+
+    .copyright {
+      color: rgba(255, 255, 255, 0.9);
+      text-align: center;
+      font-size: 14px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.05);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .error {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 8px;
+      display: none;
+      font-weight: 500;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    input.invalid, select.invalid, textarea.invalid {
+      border-color: var(--error-color);
+      background-color: rgba(239, 68, 68, 0.02);
+    }
+
+    .confirm-dialog {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .confirm-dialog-content {
+      background-color: var(--card-background);
+      margin: 15% auto;
+      padding: 35px;
+      border-radius: 20px;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: fadeInUp 0.4s ease-out;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .confirm-dialog h3 {
+      margin-top: 10px;
+      color: var(--primary-color);
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .confirm-dialog p {
+      margin-bottom: 25px;
+      color: var(--text-color);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .confirm-dialog-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .confirm-dialog button {
+      padding: 14px 28px;
+      width: auto;
+      font-size: 16px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .confirm-yes {
+      background: var(--primary-color);
+    }
+
+    .confirm-no {
+      background: var(--error-color);
+    }
+
+    .confirm-dialog button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .report-code {
+      font-weight: 700;
+      color: var(--primary-color);
+      font-size: 1.3em;
+      letter-spacing: 2px;
+      background-color: rgba(99, 102, 241, 0.1);
+      padding: 8px 16px;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 12px 0;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px dashed var(--primary-color);
+    }
+
+    .report-code:hover {
+      background-color: rgba(99, 102, 241, 0.2);
+      transform: scale(1.05);
+    }
+
+    .report-code::after {
+      content: 'Click to Copy';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .report-code:hover::after {
+      opacity: 0.7;
+    }
+
+    .search-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      padding: 10px 20px;
+      border-radius: 8px;
+      background-color: rgba(99, 102, 241, 0.05);
+    }
+
+    .search-link:hover {
+      color: var(--accent-color);
+      background-color: rgba(249, 115, 22, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .loader {
+      display: none;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-icon {
+      margin-right: 10px;
+      color: var(--primary-color);
+      font-size: 18px;
+    }
+
+    /* Enhanced form field styling */
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 18px;
+    }
+
+    .input-with-icon {
+      padding-left: 45px;
+    }
+
+    /* Feature badges */
+    .feature-badge {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    .hcaptcha-container {
+      margin-top: 20px;
+      margin-bottom: 25px;
+      display: none;
+    }
+    
+    .hcaptcha-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .hcaptcha-error {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 8px;
+      display: none;
+      font-weight: 500;
+    }
+    
+    @media screen and (max-width: 400px) {
+      .h-captcha {
+        transform: scale(0.9);
+        transform-origin: left center;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+
+      .container {
+        padding: 30px 20px;
+      }
+
+      h2 {
+        font-size: 26px;
+      }
+
+      input[type="email"],
+      input[type="text"],
+      select,
+      textarea,
+      button {
+        font-size: 16px;
+        padding: 12px;
+      }
+      
+      .full-page-menu {
+        width: 100%;
+        right: -100%;
+      }
+      
+      .confirm-dialog-content {
+        width: 90%;
+        padding: 25px;
+      }
+      
+      .confirm-dialog-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="https://tyctw.github.io/report_form" class="logo">TYCTW</a>
+      <div class="menu-icon" id="menuIcon">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <div id="fullPageMenu" class="full-page-menu">
+    <div class="close-button" id="closeMenuButton">
+      <i class="fas fa-times"></i>
+    </div>
+    <nav>
+      <ul class="nav-menu" id="navMenu">
+        <li class="nav-item"><a href="https://tyctw.github.io/" class="nav-link"><i class="fas fa-home"></i> 落點分析系統</a></li>
+        <li class="nav-item"><a href="https://tyctw.github.io/log" class="nav-link"><i class="fas fa-clipboard-list"></i> TYCTW更新日誌</a></li>
+        <li class="nav-item"><a href="https://tyctw.github.io/search" class="nav-link"><i class="fas fa-search"></i> 異常回報查詢</a></li>
+        <li class="nav-item"><a href="https://tyctw.github.io/Navigation/" class="nav-link"><i class="fas fa-graduation-cap"></i> 更多會考資訊</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main class="main-content">
+    <div class="container fade-in-up">
+      <h2>系統異常回報 <span class="feature-badge">v2.0</span></h2>
+      <form id="reportForm">
+        <div class="form-group">
+          <label for="email"><i class="far fa-envelope form-icon"></i>電子郵件：</label>
+          <div class="input-wrapper">
+            <i class="fas fa-at input-icon"></i>
+            <input type="email" id="email" name="email" required placeholder="請輸入您的電子郵件" class="input-with-icon">
+          </div>
+          <div class="error" id="emailError"></div>
+        </div>
+        <div class="form-group">
+          <label for="category"><i class="fas fa-tags form-icon"></i>異常類別：</label>
+          <div class="input-wrapper">
+            <i class="fas fa-list-ul input-icon"></i>
+            <select id="category" name="category" required class="input-with-icon">
+              <option value="">請選擇異常類別</option>
+              <option value="邀請碼功能有誤">邀請碼功能有誤</option>
+              <option value="分析結果錯誤">分析結果錯誤</option>
+              <option value="學校分數錯誤">學校分數錯誤</option>
+              <option value="學校科系錯誤">學校科系錯誤</option>
+              <option value="程式錯誤">程式錯誤</option>
+              <option value="功能異常">功能異常</option>
+              <option value="效能問題">效能問題</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          <div class="error" id="categoryError"></div>
+        </div>
+        <div class="form-group">
+          <label for="description"><i class="fas fa-comment-alt form-icon"></i>問題描述：</label>
+          <textarea id="description" name="description" required placeholder="請詳細描述您遇到的問題，越詳細越有助於我們解決問題..."></textarea>
+          <div class="error" id="descriptionError"></div>
+        </div>
+        <!-- hCaptcha 容器 -->
+        <div id="hcaptchaContainer" class="hcaptcha-container">
+          <label><i class="fas fa-shield-alt form-icon"></i>人機驗證：</label>
+          <div class="hcaptcha-wrapper">
+            <div id="hcaptcha" class="h-captcha"></div>
+            <div id="hcaptchaError" class="hcaptcha-error">請完成人機驗證</div>
+          </div>
+        </div>
+        <button type="submit" id="submitBtn">
+          <div class="btn-content">
+            <div id="submitLoader" class="loader"></div>
+            <span id="submitText">提交回報</span>
+          </div>
+        </button>
+      </form>
+      <div id="successMessage" class="success-message">
+        <i class="fas fa-check-circle" style="font-size: 48px; color: var(--success-color); margin-bottom: 15px;"></i>
+        <p>回報已成功提交，感謝您的反饋！</p>
+        <p>您的回報代碼是：<span id="reportCode" class="report-code"></span></p>
+        <p>請保存此代碼以便日後查詢回報進度。</p>
+        <a href="https://tyctw.github.io/search" class="search-link">
+          <i class="fas fa-search"></i> 前往查詢回報進度
+        </a>
+      </div>
+      <div id="errorMessage" class="error-message">
+        <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--error-color); margin-bottom: 15px;"></i>
+        <p>提交失敗，請稍後再試。</p>
+      </div>
+    </div>
+  </main>
+
+  <div id="confirmDialog" class="confirm-dialog">
+    <div class="confirm-dialog-content">
+      <i class="fas fa-question-circle" style="font-size: 48px; color: var(--primary-color); margin-bottom: 20px;"></i>
+      <h3>確認提交</h3>
+      <p>您確定要提交這份回報嗎？提交後將無法修改。</p>
+      <div class="confirm-dialog-buttons">
+        <button id="confirmYes" class="confirm-yes"><i class="fas fa-check"></i> 確定</button>
+        <button id="confirmNo" class="confirm-no"><i class="fas fa-times"></i> 取消</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="copyright">
+    &copy; 2025 TYCTW會考落點分析系統異常回報平台。保留所有權利。
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+  <script src="hcaptcha-loader.js"></script>
+</body>
+</html>

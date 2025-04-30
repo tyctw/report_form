@@ -663,28 +663,47 @@
     .confirm-dialog {
       display: none;
       position: fixed;
-      z-index: 1000;
+      z-index: 1500;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
       background-color: rgba(0,0,0,0.7);
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(8px);
       animation: fadeIn 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .confirm-dialog.active {
+      opacity: 1;
+      visibility: visible;
     }
 
     .confirm-dialog-content {
       background: var(--card-background);
-      margin: 15% auto;
-      padding: 30px;
-      border-radius: var(--border-radius);
+      width: 90%;
       max-width: 450px;
+      padding: 35px 30px;
+      border-radius: var(--border-radius);
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      animation: slideInUp 0.4s ease-out;
+      animation: none;
+      transform: translateY(30px);
+      opacity: 0;
+      transition: transform 0.4s ease-out, opacity 0.4s ease-out;
       border: 1px solid rgba(255, 255, 255, 0.05);
       position: relative;
       overflow: hidden;
+    }
+    
+    .confirm-dialog.active .confirm-dialog-content {
+      transform: translateY(0);
+      opacity: 1;
     }
 
     .confirm-dialog-content::before {
@@ -706,7 +725,7 @@
     }
 
     .confirm-dialog p {
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       color: var(--text-secondary);
       font-size: 16px;
       line-height: 1.6;
@@ -717,46 +736,253 @@
       justify-content: center;
       gap: 15px;
     }
+    
+    .confirm-dialog button {
+      padding: 12px 20px;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      min-width: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
 
     .confirm-yes {
       background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
       color: white;
       border: none;
+      box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+    }
+    
+    .confirm-yes:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(139, 92, 246, 0.4);
+    }
+    
+    .confirm-yes:active {
+      transform: translateY(-1px);
     }
 
     .confirm-no {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text-color);
       border: 1px solid var(--input-border);
     }
+    
+    .confirm-no:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--primary-color);
+    }
 
     .confirm-dialog .icon-wrapper {
-      width: 70px;
-      height: 70px;
+      width: 80px;
+      height: 80px;
       background: rgba(139, 92, 246, 0.1);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 15px;
+      margin: 0 auto 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .confirm-dialog .icon-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
+      animation: pulse 2s infinite;
     }
 
     .confirm-dialog .icon-wrapper i {
-      font-size: 30px;
+      font-size: 36px;
+      color: var(--primary-color);
+      position: relative;
+      z-index: 1;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+      }
+      100% {
+        transform: scale(0.95);
+        opacity: 0.7;
+      }
+    }
+    
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 25px;
+      }
+      
+      h2 {
+        font-size: 28px;
+      }
+      
+      .confirm-dialog-content {
+        padding: 25px 20px;
+        width: 85%;
+      }
+      
+      .confirm-dialog-buttons {
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .confirm-dialog button {
+        width: 100%;
+        padding: 14px 20px;
+      }
+      
+      .confirm-dialog .icon-wrapper {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 15px;
+      }
+      
+      .confirm-dialog .icon-wrapper i {
+        font-size: 30px;
+      }
+      
+      .confirm-dialog h3 {
+        font-size: 20px;
+      }
+      
+      .confirm-dialog p {
+        font-size: 14px;
+        margin-bottom: 25px;
+      }
+      
+      .full-page-menu {
+        width: 100%;
+        right: -100%;
+      }
+      
+      .nav-link {
+        font-size: 16px;
+        padding: 14px 20px;
+      }
+    }
+
+    /* 使用說明區塊樣式 */
+    .usage-guide {
+      margin-bottom: 25px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background-color: var(--card-background);
+      transition: all 0.3s ease;
+    }
+
+    .usage-guide-header {
+      padding: 15px 20px;
+      background-color: rgba(139, 92, 246, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .usage-guide-header:hover {
+      background-color: rgba(139, 92, 246, 0.15);
+    }
+
+    .usage-guide-title {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      font-size: 16px;
       color: var(--primary-color);
     }
 
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .usage-guide-title i {
+      margin-right: 10px;
+      font-size: 18px;
     }
 
+    .usage-guide-toggle {
+      color: var(--primary-color);
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+
+    .usage-guide-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .usage-guide.active .usage-guide-content {
+      max-height: 800px;
+    }
+
+    .usage-guide.active .usage-guide-toggle {
+      transform: rotate(180deg);
+    }
+
+    .usage-guide-inner {
+      padding: 20px;
+      color: var(--text-color);
+    }
+
+    .guide-section {
+      margin-bottom: 15px;
+    }
+
+    .guide-section h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .guide-section h4 i {
+      margin-right: 8px;
+    }
+
+    .guide-section p {
+      margin: 8px 0;
+      line-height: 1.6;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .guide-section ul {
+      padding-left: 25px;
+      margin: 10px 0;
+    }
+
+    .guide-section li {
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .guide-section .highlight {
+      background-color: rgba(139, 92, 246, 0.1);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: 500;
+      color: var(--primary-color);
+    }
+
+    /* 恢復之前被移除的樣式 */
     .form-tips {
       background: rgba(139, 92, 246, 0.1);
       border-left: 4px solid var(--primary-color);
@@ -918,146 +1144,6 @@
         transform: translateX(0);
         opacity: 1;
       }
-    }
-
-    @media screen and (max-width: 768px) {
-      .container {
-        padding: 25px;
-      }
-      
-      h2 {
-        font-size: 28px;
-      }
-      
-      .confirm-dialog-content {
-        width: 90%;
-        padding: 25px;
-        margin: 20% auto;
-      }
-
-      .confirm-dialog-buttons {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .confirm-dialog button {
-        width: 100%;
-      }
-
-      .full-page-menu {
-        width: 100%;
-        right: -100%;
-      }
-      
-      .nav-link {
-        font-size: 16px;
-        padding: 14px 20px;
-      }
-    }
-
-    /* 使用說明區塊樣式 */
-    .usage-guide {
-      margin-bottom: 25px;
-      border-radius: var(--border-radius);
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      background-color: var(--card-background);
-      transition: all 0.3s ease;
-    }
-
-    .usage-guide-header {
-      padding: 15px 20px;
-      background-color: rgba(139, 92, 246, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .usage-guide-header:hover {
-      background-color: rgba(139, 92, 246, 0.15);
-    }
-
-    .usage-guide-title {
-      display: flex;
-      align-items: center;
-      font-weight: 600;
-      font-size: 16px;
-      color: var(--primary-color);
-    }
-
-    .usage-guide-title i {
-      margin-right: 10px;
-      font-size: 18px;
-    }
-
-    .usage-guide-toggle {
-      color: var(--primary-color);
-      font-size: 18px;
-      transition: transform 0.3s ease;
-    }
-
-    .usage-guide-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-    }
-
-    .usage-guide.active .usage-guide-content {
-      max-height: 800px;
-    }
-
-    .usage-guide.active .usage-guide-toggle {
-      transform: rotate(180deg);
-    }
-
-    .usage-guide-inner {
-      padding: 20px;
-      color: var(--text-color);
-    }
-
-    .guide-section {
-      margin-bottom: 15px;
-    }
-
-    .guide-section h4 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: var(--primary-color);
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-    }
-
-    .guide-section h4 i {
-      margin-right: 8px;
-    }
-
-    .guide-section p {
-      margin: 8px 0;
-      line-height: 1.6;
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    .guide-section ul {
-      padding-left: 25px;
-      margin: 10px 0;
-    }
-
-    .guide-section li {
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    .guide-section .highlight {
-      background-color: rgba(139, 92, 246, 0.1);
-      padding: 2px 5px;
-      border-radius: 4px;
-      font-weight: 500;
-      color: var(--primary-color);
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1332,6 +1418,46 @@
         localStorage.setItem('guideOpen', usageGuide.classList.contains('active'));
       });
     })();
+
+    // 確認對話框功能
+    function showConfirmDialog(callback) {
+      const confirmDialog = document.getElementById('confirmDialog');
+      const confirmYes = document.getElementById('confirmYes');
+      const confirmNo = document.getElementById('confirmNo');
+      
+      // 顯示對話框
+      confirmDialog.style.display = 'flex';
+      setTimeout(() => {
+        confirmDialog.classList.add('active');
+      }, 10);
+      
+      // 確認按鈕
+      confirmYes.onclick = function() {
+        confirmDialog.classList.remove('active');
+        setTimeout(() => {
+          confirmDialog.style.display = 'none';
+          callback(); // 執行回調
+        }, 300);
+      };
+      
+      // 取消按鈕
+      confirmNo.onclick = function() {
+        confirmDialog.classList.remove('active');
+        setTimeout(() => {
+          confirmDialog.style.display = 'none';
+        }, 300);
+      };
+      
+      // 點擊背景關閉
+      confirmDialog.addEventListener('click', function(event) {
+        if (event.target === confirmDialog) {
+          confirmDialog.classList.remove('active');
+          setTimeout(() => {
+            confirmDialog.style.display = 'none';
+          }, 300);
+        }
+      });
+    }
   </script>
   <script src="script.js"></script>
   <script src="hcaptcha-loader.js"></script>

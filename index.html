@@ -954,6 +954,111 @@
         padding: 14px 20px;
       }
     }
+
+    /* 使用說明區塊樣式 */
+    .usage-guide {
+      margin-bottom: 25px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background-color: var(--card-background);
+      transition: all 0.3s ease;
+    }
+
+    .usage-guide-header {
+      padding: 15px 20px;
+      background-color: rgba(139, 92, 246, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .usage-guide-header:hover {
+      background-color: rgba(139, 92, 246, 0.15);
+    }
+
+    .usage-guide-title {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--primary-color);
+    }
+
+    .usage-guide-title i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .usage-guide-toggle {
+      color: var(--primary-color);
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+
+    .usage-guide-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .usage-guide.active .usage-guide-content {
+      max-height: 800px;
+    }
+
+    .usage-guide.active .usage-guide-toggle {
+      transform: rotate(180deg);
+    }
+
+    .usage-guide-inner {
+      padding: 20px;
+      color: var(--text-color);
+    }
+
+    .guide-section {
+      margin-bottom: 15px;
+    }
+
+    .guide-section h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .guide-section h4 i {
+      margin-right: 8px;
+    }
+
+    .guide-section p {
+      margin: 8px 0;
+      line-height: 1.6;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .guide-section ul {
+      padding-left: 25px;
+      margin: 10px 0;
+    }
+
+    .guide-section li {
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .guide-section .highlight {
+      background-color: rgba(139, 92, 246, 0.1);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: 500;
+      color: var(--primary-color);
+    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -1000,6 +1105,49 @@
       <div class="form-tips">
         <i class="fas fa-info-circle"></i>
         請詳細描述您遇到的問題，我們會盡快處理您的回報。
+      </div>
+
+      <!-- 使用說明區塊 -->
+      <div class="usage-guide" id="usageGuide">
+        <div class="usage-guide-header" id="usageGuideHeader">
+          <div class="usage-guide-title">
+            <i class="fas fa-book"></i>
+            使用說明
+          </div>
+          <div class="usage-guide-toggle">
+            <i class="fas fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="usage-guide-content">
+          <div class="usage-guide-inner">
+            <div class="guide-section">
+              <h4><i class="fas fa-question-circle"></i>什麼是系統異常回報？</h4>
+              <p>系統異常回報是提供給您反饋系統問題、錯誤或建議的平台。您的回報將直接傳送給我們的技術團隊進行處理。</p>
+            </div>
+            
+            <div class="guide-section">
+              <h4><i class="fas fa-clipboard-list"></i>如何提交有效的回報</h4>
+              <p>為了幫助我們更快地解決問題，請在提交回報時包含以下信息：</p>
+              <ul>
+                <li>問題發生的<span class="highlight">確切時間</span></li>
+                <li>您嘗試執行的<span class="highlight">操作步驟</span></li>
+                <li>出現的<span class="highlight">錯誤訊息</span>（如有）</li>
+                <li>問題<span class="highlight">重現步驟</span>（如何重複出現此問題）</li>
+                <li>您使用的<span class="highlight">瀏覽器和設備</span>類型</li>
+              </ul>
+            </div>
+            
+            <div class="guide-section">
+              <h4><i class="fas fa-search"></i>如何追蹤回報狀態</h4>
+              <p>提交回報後，您將收到一個唯一的回報代碼。請保存此代碼，您可以使用它在我們的<span class="highlight">異常回報查詢</span>頁面中查詢處理進度。</p>
+            </div>
+            
+            <div class="guide-section">
+              <h4><i class="fas fa-clock"></i>回報處理時間</h4>
+              <p>我們的技術團隊通常會在<span class="highlight">1-3個工作日</span>內處理您的回報。重大系統問題通常會優先處理。</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="form-progress">
@@ -1162,6 +1310,26 @@
         
         // 保存到本地儲存
         localStorage.setItem("theme", theme);
+      });
+    })();
+
+    // 使用說明折疊功能
+    (function() {
+      const usageGuide = document.getElementById('usageGuide');
+      const usageGuideHeader = document.getElementById('usageGuideHeader');
+      
+      // 檢查本地儲存的狀態
+      const isGuideOpen = localStorage.getItem('guideOpen') === 'true';
+      
+      // 設置初始狀態
+      if (isGuideOpen) {
+        usageGuide.classList.add('active');
+      }
+      
+      usageGuideHeader.addEventListener('click', function() {
+        usageGuide.classList.toggle('active');
+        // 儲存狀態
+        localStorage.setItem('guideOpen', usageGuide.classList.contains('active'));
       });
     })();
   </script>

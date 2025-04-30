@@ -7,21 +7,65 @@
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
 
     :root {
-      --primary-color: #8b5cf6;
-      --primary-hover: #7c3aed;
-      --secondary-color: #10b981;
-      --accent-color: #f97316;
-      --text-color: #e2e8f0;
-      --text-secondary: #94a3b8;
-      --background-color: #0f172a;
-      --card-background: #1e293b;
-      --input-background: #334155;
-      --input-border: #475569;
-      --box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3), 0 10px 10px -5px rgba(0,0,0,0.2);
+      /* 暗色模式變數 */
+      --dark-primary-color: #8b5cf6;
+      --dark-primary-hover: #7c3aed;
+      --dark-secondary-color: #10b981;
+      --dark-accent-color: #f97316;
+      --dark-text-color: #e2e8f0;
+      --dark-text-secondary: #94a3b8;
+      --dark-background-color: #0f172a;
+      --dark-card-background: #1e293b;
+      --dark-input-background: #334155;
+      --dark-input-border: #475569;
+      --dark-box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3), 0 10px 10px -5px rgba(0,0,0,0.2);
+      
+      /* 淺色模式變數 */
+      --light-primary-color: #6d28d9;
+      --light-primary-hover: #5b21b6;
+      --light-secondary-color: #059669;
+      --light-accent-color: #ea580c;
+      --light-text-color: #1e293b;
+      --light-text-secondary: #64748b;
+      --light-background-color: #f1f5f9;
+      --light-card-background: #ffffff;
+      --light-input-background: #f8fafc;
+      --light-input-border: #cbd5e1;
+      --light-box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+      
+      /* 共用變數 */
       --error-color: #ef4444;
       --success-color: #10b981;
       --border-radius: 12px;
       --nav-height: 70px;
+      
+      /* 預設使用暗色模式 */
+      --primary-color: var(--dark-primary-color);
+      --primary-hover: var(--dark-primary-hover);
+      --secondary-color: var(--dark-secondary-color);
+      --accent-color: var(--dark-accent-color);
+      --text-color: var(--dark-text-color);
+      --text-secondary: var(--dark-text-secondary);
+      --background-color: var(--dark-background-color);
+      --card-background: var(--dark-card-background);
+      --input-background: var(--dark-input-background);
+      --input-border: var(--dark-input-border);
+      --box-shadow: var(--dark-box-shadow);
+    }
+    
+    /* 淺色模式 */
+    [data-theme="light"] {
+      --primary-color: var(--light-primary-color);
+      --primary-hover: var(--light-primary-hover);
+      --secondary-color: var(--light-secondary-color);
+      --accent-color: var(--light-accent-color);
+      --text-color: var(--light-text-color);
+      --text-secondary: var(--light-text-secondary);
+      --background-color: var(--light-background-color);
+      --card-background: var(--light-card-background);
+      --input-background: var(--light-input-background);
+      --input-border: var(--light-input-border);
+      --box-shadow: var(--light-box-shadow);
     }
 
     body {
@@ -33,10 +77,11 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .header {
-      background-color: rgba(15, 23, 42, 0.9);
+      background-color: var(--card-background);
       backdrop-filter: blur(12px);
       padding: 0;
       position: sticky;
@@ -45,6 +90,7 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       height: var(--nav-height);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     .header-content {
@@ -85,6 +131,94 @@
 
     .logo:hover {
       transform: scale(1.05);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-right: 15px;
+      color: var(--text-color);
+    }
+    
+    .theme-toggle:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+    
+    .theme-toggle i {
+      font-size: 18px;
+      transition: transform 0.5s ease;
+    }
+    
+    .theme-toggle i.fa-sun {
+      display: none;
+    }
+    
+    [data-theme="light"] .theme-toggle i.fa-moon {
+      display: none;
+    }
+    
+    [data-theme="light"] .theme-toggle i.fa-sun {
+      display: block;
+    }
+    
+    @media (prefers-color-scheme: light) {
+      :root {
+        --primary-color: var(--light-primary-color);
+        --primary-hover: var(--light-primary-hover);
+        --secondary-color: var(--light-secondary-color);
+        --accent-color: var(--light-accent-color);
+        --text-color: var(--light-text-color);
+        --text-secondary: var(--light-text-secondary);
+        --background-color: var(--light-background-color);
+        --card-background: var(--light-card-background);
+        --input-background: var(--light-input-background);
+        --input-border: var(--light-input-border);
+        --box-shadow: var(--light-box-shadow);
+      }
+      
+      .theme-toggle i.fa-moon {
+        display: none;
+      }
+      
+      .theme-toggle i.fa-sun {
+        display: block;
+      }
+      
+      [data-theme="dark"] {
+        --primary-color: var(--dark-primary-color);
+        --primary-hover: var(--dark-primary-hover);
+        --secondary-color: var(--dark-secondary-color);
+        --accent-color: var(--dark-accent-color);
+        --text-color: var(--dark-text-color);
+        --text-secondary: var(--dark-text-secondary);
+        --background-color: var(--dark-background-color);
+        --card-background: var(--dark-card-background);
+        --input-background: var(--dark-input-background);
+        --input-border: var(--dark-input-border);
+        --box-shadow: var(--dark-box-shadow);
+      }
+      
+      [data-theme="dark"] .theme-toggle i.fa-sun {
+        display: none;
+      }
+      
+      [data-theme="dark"] .theme-toggle i.fa-moon {
+        display: block;
+      }
     }
 
     .menu-icon {
@@ -827,8 +961,14 @@
   <header class="header">
     <div class="header-content">
       <a href="https://tyctw.github.io/report_form" class="logo">TYCTW</a>
-      <div class="menu-icon" id="menuIcon">
-        <i class="fas fa-bars"></i>
+      <div class="header-actions">
+        <div class="theme-toggle" id="themeToggle">
+          <i class="fas fa-moon"></i>
+          <i class="fas fa-sun"></i>
+        </div>
+        <div class="menu-icon" id="menuIcon">
+          <i class="fas fa-bars"></i>
+        </div>
       </div>
     </div>
   </header>
@@ -986,6 +1126,45 @@
   </footer>
 
   <script src="config.js"></script>
+  <script>
+    // 主題切換功能
+    (function() {
+      const themeToggle = document.getElementById('themeToggle');
+      const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      
+      // 檢查本地儲存
+      const currentTheme = localStorage.getItem("theme");
+      if (currentTheme === "light") {
+        document.body.setAttribute("data-theme", "light");
+      } else if (currentTheme === "dark") {
+        document.body.setAttribute("data-theme", "dark");
+      } else {
+        // 如果沒有儲存的主題，根據系統偏好設置
+        if (prefersDarkScheme.matches) {
+          document.body.setAttribute("data-theme", "dark");
+        } else {
+          document.body.setAttribute("data-theme", "light");
+        }
+      }
+      
+      // 監聽點擊事件
+      themeToggle.addEventListener("click", function() {
+        let theme;
+        
+        // 切換主題
+        if (document.body.getAttribute("data-theme") === "light") {
+          document.body.setAttribute("data-theme", "dark");
+          theme = "dark";
+        } else {
+          document.body.setAttribute("data-theme", "light");
+          theme = "light";
+        }
+        
+        // 保存到本地儲存
+        localStorage.setItem("theme", theme);
+      });
+    })();
+  </script>
   <script src="script.js"></script>
   <script src="hcaptcha-loader.js"></script>
 </body>
